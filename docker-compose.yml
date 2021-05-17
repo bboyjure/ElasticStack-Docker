@@ -126,6 +126,19 @@ services:
         depends_on:
             - elasticsearch01
 
+    heartbeat:
+        user: root
+        container_name: heartbeat
+        image: docker.elastic.co/beats/heartbeat:$ELK_VERSION
+        volumes:
+            - ./beats/heartbeat/config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+        command: ["--strict.perms=false"]
+        networks:
+            - elastic  
+        depends_on:
+            - elasticsearch01
+
     packetbeat:
         user: root
         image: docker.elastic.co/beats/packetbeat:$ELK_VERSION
