@@ -1,4 +1,5 @@
 mylog
+./mylog
 mylog/*
 beats/metricbeat/metricbeat-data
 beats/metricbeat/metricbeat-data/*
