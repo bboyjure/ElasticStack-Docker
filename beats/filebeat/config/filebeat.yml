@@ -64,7 +64,7 @@ filebeat.modules:
 
 # #========================== Logstash output ===============================
 output.logstash:
-  hosts: ["http://logstash:5044"]
+  hosts: ["logstash:5044"]
 
 
 # #============================== Dashboards =====================================

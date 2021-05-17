@@ -1,1 +1,7 @@
 mylog
+mylog/*
+beats/metricbeat/metricbeat-data
+beats/metricbeat/metricbeat-data/*
+beats/packetbeat/packetbeat-data
+beats/packetbeat/packetbeat-data/*
+elasticsearch/elastic-*

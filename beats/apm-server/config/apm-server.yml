@@ -1,0 +1,41 @@
+apm-server:
+  host: 0.0.0.0:8200
+  rum:
+    enabled: true
+
+output:
+  elasticsearch:
+    hosts: ["http://elasticsearch01:9200","http://elasticsearch02:9200","http://elasticsearch03:9200"]
+    username: $ELASTICSEARCH_USERNAME
+    password: $ELASTICSEARCH_PASSWORD
+
+# output.elasticsearch.index: "application-monitoring-%{[agent.version]}-%{+yyyy.MM.dd}"
+# setup.template.name: "apm"
+# setup.template.pattern: "apm-*"
+
+setup.kibana.host: http://kibana:5601
+setup.kibana.username: $ELASTICSEARCH_USERNAME
+setup.kibana.password: $ELASTICSEARCH_PASSWORD
+setup.template.settings.index.number_of_replicas: 0
+apm-server.kibana.enabled: true
+apm-server.kibana.host: http://kibana:5601
+apm-server.kibana.username: $ELASTICSEARCH_USERNAME
+apm-server.kibana.password: $ELASTICSEARCH_PASSWORD
+xpack.monitoring.enabled: true
+
+
+        # command: > 
+        #     --strict.perms=false -e
+        #     -E apm-server.rum.enabled=true
+        #     -E setup.kibana.host=http://kibana:5601
+        #     -E setup.kibana.username=$ELASTICSEARCH_USERNAME
+        #     -E setup.kibana.password=$ELASTICSEARCH_PASSWORD
+        #     -E setup.template.settings.index.number_of_replicas=0
+        #     -E apm-server.kibana.enabled=true
+        #     -E apm-server.kibana.host=http://kibana:5601
+        #     -E apm-server.kibana.username=$ELASTICSEARCH_USERNAME
+        #     -E apm-server.kibana.password=$ELASTICSEARCH_PASSWORD
+        #     -E output.elasticsearch.hosts=["http://elasticsearch01:9200","http://elasticsearch02:9200","http://elasticsearch03:9200"]
+        #     -E output.elasticsearch.username=$ELASTICSEARCH_USERNAME
+        #     -E output.elasticsearch.password=$ELASTICSEARCH_PASSWORD
+        #     -E xpack.monitoring.enabled=true

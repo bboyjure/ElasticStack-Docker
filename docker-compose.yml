@@ -107,7 +107,7 @@ services:
         networks:
             - elastic
         depends_on:
-            - kibana
+            - logstash
 
     metricbeat:
         user: root
@@ -124,7 +124,7 @@ services:
         networks:
             - elastic  
         depends_on:
-            - kibana
+            - elasticsearch01
 
     packetbeat:
         user: root
@@ -141,6 +141,8 @@ services:
         command: ["--strict.perms=false"]
         networks:
             - elastic
+        depends_on: 
+            - elasticsearch01
 
     apm-server:
         image: docker.elastic.co/apm/apm-server:$ELK_VERSION
@@ -152,8 +154,6 @@ services:
         volumes: 
             - ./beats/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml
         command: ["--strict.perms=false"]
-        depends_on:
-            - elasticsearch01
         healthcheck:
             interval: 10s
             retries: 12
@@ -167,6 +167,8 @@ services:
         #     - com.df.srcPort=8200
         networks:
             - elastic 
+        depends_on:
+            - elasticsearch01
 
 
 

@@ -50,6 +50,10 @@ output.elasticsearch:
   username: $ELASTICSEARCH_USERNAME
   password: $ELASTICSEARCH_PASSWORD
 
+# output.elasticsearch.index: "packets-monitoring-%{[agent.version]}-%{+yyyy.MM.dd}"
+# setup.template.name: "packetbeat"
+# setup.template.pattern: "packetbeat-*"
+
 # #========================== Logstash output ===============================
 # output.logstash:
 #   hosts: ["logstash:5044"]

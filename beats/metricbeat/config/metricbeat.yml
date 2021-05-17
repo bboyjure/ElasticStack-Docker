@@ -50,19 +50,18 @@ metricbeat.modules:
 #     netinfo.enabled: true
 
 #========================== Elasticsearch output ===============================
-
 output.elasticsearch:
   hosts: ["http://elasticsearch01:9200","http://elasticsearch02:9200","http://elasticsearch03:9200"]
   username: $ELASTICSEARCH_USERNAME
   password: $ELASTICSEARCH_PASSWORD
 
-# output.elasticsearch.index: "metricbeat-%{[agent.version]}-%{+yyyy.MM.dd}"
-# setup.template.name: "metricbeat"
-# setup.template.pattern: "metricbeat-*"
-
-# #========================== Logstash output ===============================
+#========================== Logstash output ===============================
 # output.logstash:
 #   hosts: ["logstash:5044"]
+
+# output.elasticsearch.index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+# setup.template.name: "filebeat"
+# setup.template.pattern: "filebeat-*"
 
 #============================== Dashboards =====================================
 # setup.dashboards:
