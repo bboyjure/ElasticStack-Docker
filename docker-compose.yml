@@ -1,0 +1,194 @@
+version: '3'
+services:
+    elasticsearch01:
+        image: docker.elastic.co/elasticsearch/elasticsearch:$ELK_VERSION
+        container_name: elasticsearch01
+        environment:
+            ELASTIC_PASSWORD: $ELASTICSEARCH_PASSWORD
+            node.name: elasticsearch01
+            discovery.seed_hosts: elasticsearch02,elasticsearch03
+            cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+            ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            - ./elasticsearch/elastic-data01:/usr/share/elasticsearch/data
+        ports:
+            - 9200:9200
+        networks:
+            - elastic
+        # entrypoint: ./elasticsearch/docker-entrypoint-es.sh
+
+    elasticsearch02:
+        image: docker.elastic.co/elasticsearch/elasticsearch:$ELK_VERSION
+        container_name: elasticsearch02
+        environment:
+            ELASTIC_PASSWORD: $ELASTICSEARCH_PASSWORD
+            node.name: elasticsearch02
+            discovery.seed_hosts: elasticsearch01,elasticsearch03
+            cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+            ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            - ./elasticsearch/elastic-data02:/usr/share/elasticsearch/data
+        networks:
+            - elastic
+        # entrypoint: ./elasticsearch/docker-entrypoint-es.sh
+
+    elasticsearch03:
+        image: docker.elastic.co/elasticsearch/elasticsearch:$ELK_VERSION
+        container_name: elasticsearch03
+        environment:
+            ELASTIC_PASSWORD: $ELASTICSEARCH_PASSWORD
+            node.name: elasticsearch03
+            discovery.seed_hosts: elasticsearch01,elasticsearch02
+            cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+            ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            - ./elasticsearch/elastic-data03:/usr/share/elasticsearch/data
+        networks:
+            - elastic
+        # entrypoint: ./elasticsearch/docker-entrypoint-es.sh
+        
+    kibana:
+        image: docker.elastic.co/kibana/kibana:$ELK_VERSION
+        container_name: kibana
+        ports:
+            - 5601:5601
+        volumes:
+            - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+        environment:
+            ELASTICSEARCH_URL: http://elasticsearch01:9200
+        networks:
+            - elastic
+        depends_on:
+            - elasticsearch01
+
+    logstash:
+        image: docker.elastic.co/logstash/logstash:$ELK_VERSION
+        container_name: logstash
+        volumes:
+            - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+            - ./logstash/pipeline:/usr/share/logstash/pipeline
+        ports:
+            - "5044:5044"
+            - "5000:5000/tcp"
+            - "5000:5000/udp"
+            - "9600:9600"
+        environment:
+            LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+        networks:
+            - elastic
+        depends_on:
+            - elasticsearch01
+
+    filebeat:
+        user: root
+        container_name: filebeat
+        image: docker.elastic.co/beats/filebeat:$ELK_VERSION
+        volumes:
+            - /var/run/docker.sock:/host_docker/docker.sock
+            - /var/lib/docker:/host_docker/var/lib/docker
+            - ./mylog:/usr/share/filebeat/mylog
+            - ./beats/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+        command: ["--strict.perms=false"]
+        networks:
+            - elastic
+        depends_on:
+            - kibana
+
+    metricbeat:
+        user: root
+        container_name: metricbeat
+        image: docker.elastic.co/beats/metricbeat:$ELK_VERSION
+        volumes:
+            - /proc:/hostfs/proc:ro
+            - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+            - /:/hostfs:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./beats/metricbeat/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+            - ./beats/metricbeat/metricbeat-data:/usr/share/metricbeat/data
+        command: ["--strict.perms=false", "-system.hostfs=/hostfs"]  
+        networks:
+            - elastic  
+        depends_on:
+            - kibana
+
+    packetbeat:
+        user: root
+        image: docker.elastic.co/beats/packetbeat:$ELK_VERSION
+        # https://github.com/docker/swarmkit/issues/1951
+        container_name: packetbeat
+        volumes:
+            - ./beats/packetbeat/config/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+            - ./beats/packetbeat/packetbeat-data:/usr/share/packetbeat/data
+            # - /var/run/docker.sock:/var/run/docker.sock
+        cap_add:
+            - NET_RAW
+            - NET_ADMIN
+        command: ["--strict.perms=false"]
+        networks:
+            - elastic
+
+    apm-server:
+        image: docker.elastic.co/apm/apm-server:$ELK_VERSION
+        container_name: apm-server
+        cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+        cap_drop: ["ALL"]
+        ports:
+            - 8200:8200
+        command: > 
+            --strict.perms=false -e
+            -E apm-server.rum.enabled=true
+            -E setup.kibana.host=http://kibana:5601
+            -E setup.kibana.username=$ELASTICSEARCH_USERNAME
+            -E setup.kibana.password=$ELASTICSEARCH_PASSWORD
+            -E setup.template.settings.index.number_of_replicas=0
+            -E apm-server.kibana.enabled=true
+            -E apm-server.kibana.host=http://kibana:5601
+            -E apm-server.kibana.username=$ELASTICSEARCH_USERNAME
+            -E apm-server.kibana.password=$ELASTICSEARCH_PASSWORD
+            -E output.elasticsearch.hosts=["http://elasticsearch01:9200","http://elasticsearch02:9200","http://elasticsearch03:9200"]
+            -E output.elasticsearch.username=$ELASTICSEARCH_USERNAME
+            -E output.elasticsearch.password=$ELASTICSEARCH_PASSWORD
+            -E xpack.monitoring.enabled=true
+        depends_on:
+            - elasticsearch01
+        healthcheck:
+            interval: 10s
+            retries: 12
+            test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+        # deploy:
+        #   labels:
+        #     - com.df.notify=true
+        #     - com.df.distribute=true
+        #     - com.df.servicePath=/
+        #     - com.df.port=8200
+        #     - com.df.srcPort=8200
+        networks:
+            - elastic 
+
+
+
+volumes:
+    elastic-data01:
+    elastic-data02:
+    elastic-data03:
+    metricbeat-data:
+    packetbeat-data:
+
+networks:
+    elastic:
+        driver: bridge

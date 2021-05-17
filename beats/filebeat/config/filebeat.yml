@@ -1,0 +1,83 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /usr/share/filebeat/mylog/*.log
+
+
+
+# processors:
+#   - add_docker_metadata:
+#       host: "unix:///host_docker/docker.sock"
+      
+
+# https://github.com/elastic/beats/blob/master/filebeat/filebeat.reference.yml
+
+filebeat.modules:
+- module: system
+  syslog:
+    enabled: true
+  auth:
+    enabled: true
+# - module: auditd
+#   log:
+#     # - Does not look like Auditd is supported in Alpine linux: https://github.com/linuxkit/linuxkit/issues/52
+#     # - CentOS does not need us to install the audit system, it ships as standard. If you are using Ubuntu, though,
+#     # this is probably something you would want to install. (sudo apt-get install -y auditd audispd-plugins)
+#     enabled: true
+
+# #filebeat.inputs:
+# #- type: container
+# #  enabled: true
+# #  paths:
+# #    -/var/lib/docker/containers/*/*.log
+# #  stream: all # can be all, stdout or stderr
+
+# #========================== Filebeat autodiscover ==============================
+# # See this URL on how to run Apache2 Filebeat module: # https://www.elastic.co/guide/en/beats/filebeat/current/running-on-docker.html
+# filebeat.autodiscover:
+#   providers:
+#     - type: docker
+#       # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-autodiscover-hints.html
+#       # This URL alos contains instructions on multi-line logs
+#       hints.enabled: true
+
+# #================================ Processors ===================================
+# processors:
+# - add_cloud_metadata: ~
+# - add_docker_metadata: ~
+# - add_locale:
+#     format: offset
+# - add_host_metadata:
+#     netinfo.enabled: true
+
+# #========================== Elasticsearch output ===============================
+
+# output.elasticsearch:
+#   hosts: ["http://elasticsearch01:9200","http://elasticsearch02:9200","http://elasticsearch03:9200"]
+#   username: $ELASTICSEARCH_USERNAME
+#   password: $ELASTICSEARCH_PASSWORD
+
+# output.elasticsearch.index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+# setup.template.name: "filebeat"
+# setup.template.pattern: "filebeat-*"
+
+# #========================== Logstash output ===============================
+output.logstash:
+  hosts: ["logstash:5044"]
+
+
+# #============================== Dashboards =====================================
+# setup.dashboards:
+#   enabled: true
+
+# #============================== Kibana =========================================
+# setup.kibana:
+#   host: "http://kibana:5601"
+#   username: $ELASTICSEARCH_USERNAME
+#   password: $ELASTICSEARCH_PASSWORD
+
+# #============================== Xpack Monitoring ===============================
+# xpack.monitoring:
+#   enabled: true
+#   elasticsearch:
