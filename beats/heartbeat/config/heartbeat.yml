@@ -1,11 +1,14 @@
 heartbeat.monitors:
 - type: http
-  schedule: '@every 10s'
+  schedule: '@every 5s'
   urls:
     - http://elasticsearch01:9200
     - http://elasticsearch02:9200
     - http://elasticsearch03:9200
-    - http://kibana:5601
+    - http://logstash:5000
+    - http://apm-server:8200
+    - http://192.168.0.39:4200
+    - http://192.168.0.39:8080
 
   check.request:
     method: GET
@@ -21,6 +24,6 @@ output.elasticsearch:
   password: $ELASTICSEARCH_PASSWORD
 
 setup.kibana:
-  host: "kibana:5601"
+  host: "http//kibana:5601"
   username: $ELASTICSEARCH_USERNAME
   password: $ELASTICSEARCH_PASSWORD

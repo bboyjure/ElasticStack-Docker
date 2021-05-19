@@ -165,6 +165,7 @@ services:
         ports:
             - 8200:8200
         volumes: 
+            -- ./beats/apm-server/logs:/usr/share/apm-server/logs
             - ./beats/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml
         command: ["--strict.perms=false"]
         healthcheck:
@@ -191,6 +192,7 @@ volumes:
     elastic-data03:
     metricbeat-data:
     packetbeat-data:
+    logs:
 
 networks:
     elastic:

@@ -16,13 +16,13 @@ output:
 setup.kibana.host: http://kibana:5601
 setup.kibana.username: $ELASTICSEARCH_USERNAME
 setup.kibana.password: $ELASTICSEARCH_PASSWORD
-setup.template.settings.index.number_of_replicas: 0
-apm-server.kibana.enabled: true
-apm-server.kibana.host: http://kibana:5601
-apm-server.kibana.username: $ELASTICSEARCH_USERNAME
-apm-server.kibana.password: $ELASTICSEARCH_PASSWORD
-xpack.monitoring.enabled: true
 
+# setup.template.settings.index.number_of_replicas: 0
+# apm-server.kibana.enabled: true
+# apm-server.kibana.host: http://kibana:5601
+# apm-server.kibana.username: $ELASTICSEARCH_USERNAME
+# apm-server.kibana.password: $ELASTICSEARCH_PASSWORD
+xpack.monitoring.enabled: true
 
         # command: > 
         #     --strict.perms=false -e
