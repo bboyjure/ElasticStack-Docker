@@ -14,6 +14,6 @@ monitoring.ui.container.elasticsearch.enabled: true
 #
 # xpack.security.enabled: true
 
-xpack.ingestManager.enabled: true
-xpack.ingestManager.fleet.tlsCheckDisabled: true 
+xpack.fleet.enabled: true
+xpack.fleet.agents.tlsCheckDisabled: true 
 xpack.security.enabled: true
