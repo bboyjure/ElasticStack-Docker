@@ -107,7 +107,7 @@ services:
         networks:
             - elastic
         depends_on:
-            - logstash
+            - kibana
 
     metricbeat:
         user: root
@@ -125,7 +125,7 @@ services:
         networks:
             - elastic  
         depends_on:
-            - elasticsearch01
+            - kibana
 
     heartbeat:
         user: root
@@ -156,7 +156,7 @@ services:
         networks:
             - elastic
         depends_on: 
-            - elasticsearch01
+            - kibana
 
     apm-server:
         image: docker.elastic.co/apm/apm-server:$ELK_VERSION

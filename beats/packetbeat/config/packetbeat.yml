@@ -59,14 +59,14 @@ output.elasticsearch:
 #   hosts: ["logstash:5044"]
 
 #============================== Dashboards =====================================
-# setup.dashboards:
-#   enabled: true
+setup.dashboards:
+  enabled: true
 
 #============================== Kibana =========================================
-# setup.kibana:
-#   host: ["http://kibana:5601"]
-#   username: $ELASTICSEARCH_USERNAME
-#   password: $ELASTICSEARCH_PASSWORD
+setup.kibana:
+  host: "http://kibana:5601"
+  username: $ELASTICSEARCH_USERNAME
+  password: $ELASTICSEARCH_PASSWORD
 
 #============================== Xpack Monitoring ===============================
 xpack.monitoring:
