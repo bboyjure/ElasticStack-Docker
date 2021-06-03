@@ -1,0 +1,9 @@
+mylog
+/mylog
+mylog/*
+beats/apm-server/logs
+beats/metricbeat/metricbeat-data
+beats/metricbeat/metricbeat-data/*
+beats/packetbeat/packetbeat-data
+beats/packetbeat/packetbeat-data/*
+elasticsearch/elastic-*
