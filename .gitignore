@@ -1,5 +1,5 @@
 mylog
-./mylog
+/mylog
 mylog/*
 beats/apm-server/logs
 beats/metricbeat/metricbeat-data
