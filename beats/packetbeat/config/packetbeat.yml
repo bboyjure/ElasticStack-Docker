@@ -64,7 +64,7 @@ setup.dashboards:
 
 #============================== Kibana =========================================
 setup.kibana:
-  host: "http://kibana:5601"
+  host: http://kibana:5601
   username: $ELASTICSEARCH_USERNAME
   password: $ELASTICSEARCH_PASSWORD
 
