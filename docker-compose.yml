@@ -16,6 +16,7 @@ services:
         volumes:
             - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
             - ./elasticsearch/elastic-data01:/usr/share/elasticsearch/data
+            - ./elasticsearch/elastic-data01/logs:/usr/share/elasticsearch/logs
         ports:
             - 9200:9200
         networks:
@@ -38,6 +39,7 @@ services:
         volumes:
             - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
             - ./elasticsearch/elastic-data02:/usr/share/elasticsearch/data
+            - ./elasticsearch/elastic-data02/logs:/usr/share/elasticsearch/logs
         networks:
             - elastic
         # entrypoint: ./elasticsearch/docker-entrypoint-es.sh
@@ -58,6 +60,7 @@ services:
         volumes:
             - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
             - ./elasticsearch/elastic-data03:/usr/share/elasticsearch/data
+            - ./elasticsearch/elastic-data03/logs:/usr/share/elasticsearch/logs
         networks:
             - elastic
         # entrypoint: ./elasticsearch/docker-entrypoint-es.sh
@@ -95,7 +98,7 @@ services:
             - elasticsearch01
 
     filebeat:
-        user: root
+        user: docker
         container_name: filebeat
         image: docker.elastic.co/beats/filebeat:$ELK_VERSION
         volumes:
@@ -110,7 +113,7 @@ services:
             - kibana
 
     metricbeat:
-        user: root
+        user: docker
         container_name: metricbeat
         hostname: $SERVER_NAME
         image: docker.elastic.co/beats/metricbeat:$ELK_VERSION
@@ -128,7 +131,7 @@ services:
             - kibana
 
     heartbeat:
-        user: root
+        user: docker
         container_name: heartbeat
         image: docker.elastic.co/beats/heartbeat:$ELK_VERSION
         volumes:
@@ -141,7 +144,7 @@ services:
             - elasticsearch01
 
     packetbeat:
-        user: root
+        user: docker
         image: docker.elastic.co/beats/packetbeat:$ELK_VERSION
         # https://github.com/docker/swarmkit/issues/1951
         container_name: packetbeat
