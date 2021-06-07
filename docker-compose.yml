@@ -98,7 +98,7 @@ services:
             - elasticsearch01
 
     filebeat:
-        user: docker
+        user: root
         container_name: filebeat
         image: docker.elastic.co/beats/filebeat:$ELK_VERSION
         volumes:
@@ -113,7 +113,7 @@ services:
             - kibana
 
     metricbeat:
-        user: docker
+        user: root
         container_name: metricbeat
         hostname: $SERVER_NAME
         image: docker.elastic.co/beats/metricbeat:$ELK_VERSION
@@ -131,7 +131,7 @@ services:
             - kibana
 
     heartbeat:
-        user: docker
+        user: root
         container_name: heartbeat
         image: docker.elastic.co/beats/heartbeat:$ELK_VERSION
         volumes:
@@ -144,7 +144,7 @@ services:
             - elasticsearch01
 
     packetbeat:
-        user: docker
+        user: root
         image: docker.elastic.co/beats/packetbeat:$ELK_VERSION
         # https://github.com/docker/swarmkit/issues/1951
         container_name: packetbeat
